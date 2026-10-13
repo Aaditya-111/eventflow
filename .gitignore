@@ -1,0 +1,20 @@
+﻿# Secrets and environment configuration
+.env
+.env.*
+!.env.example
+
+# Compiled binaries
+eventflow.exe
+eventflow
+
+# Go test and coverage outputs
+*.test
+coverage.out
+coverage.html
+
+# IDE and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.bak
