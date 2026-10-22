@@ -1,0 +1,12 @@
+﻿.env
+.env.*
+!.env.example
+.git
+.gitignore
+eventflow.exe
+eventflow
+*.test
+coverage.out
+coverage.html
+.vscode
+.idea

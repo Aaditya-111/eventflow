@@ -18,3 +18,8 @@ coverage.html
 .DS_Store
 Thumbs.db
 *.bak
+
+# Local backups and generated artifacts
+*.before-app
+/repository
+*.cover

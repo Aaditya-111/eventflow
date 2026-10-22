@@ -1,5 +1,4 @@
-
-services:
+﻿services:
   postgres:
     image: postgres:17
     container_name: eventflow-postgres
@@ -31,6 +30,25 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    restart: unless-stopped
+
+  eventflow:
+    image: eventflow:local
+    container_name: eventflow-app
+    environment:
+      DATABASE_URL: "postgres://eventflow:${POSTGRES_PASSWORD}@postgres:5432/eventflow?sslmode=disable"
+      REDIS_ADDR: "redis:6379"
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD}
+      WEBHOOK_ENCRYPTION_KEY: ${WEBHOOK_ENCRYPTION_KEY:?Set WEBHOOK_ENCRYPTION_KEY}
+      SUBSCRIPTION_API_TOKEN: ${SUBSCRIPTION_API_TOKEN:?Set SUBSCRIPTION_API_TOKEN}
+      EVENT_INGESTION_API_TOKEN: ${EVENT_INGESTION_API_TOKEN:?Set EVENT_INGESTION_API_TOKEN}
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:

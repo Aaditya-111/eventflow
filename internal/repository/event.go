@@ -155,3 +155,37 @@ func wrapDatabaseError(operation string, err error) error {
 	}
 	return fmt.Errorf("%s: %w", operation, err)
 }
+
+func (r *EventRepository) GetByID(
+	ctx context.Context,
+	eventID string,
+) (Event, error) {
+	if r == nil || r.db == nil {
+		return Event{}, errors.New("event database is not configured")
+	}
+
+	eventID = strings.TrimSpace(eventID)
+	if eventID == "" {
+		return Event{}, ErrInvalidEvent
+	}
+
+	var event Event
+	err := r.db.QueryRowContext(ctx, `
+		SELECT event_id, event_type, data, created_at
+		FROM events
+		WHERE event_id = $1
+	`, eventID).Scan(
+		&event.EventID,
+		&event.Type,
+		&event.Data,
+		&event.CreatedAt,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return Event{}, fmt.Errorf("event %q not found: %w", eventID, err)
+		}
+		return Event{}, fmt.Errorf("get event by ID: %w", err)
+	}
+
+	return event, nil
+}
